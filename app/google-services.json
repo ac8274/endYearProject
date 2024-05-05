@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "148309086418",
+    "project_id": "vacination-table",
+    "storage_bucket": "vacination-table.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:148309086418:android:25e8a336b349fefb291d0b",
+        "android_client_info": {
+          "package_name": "com.example.endyearproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4IzK9ugN6RNGg6ZNrYAnZlBUNAtebAX0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
