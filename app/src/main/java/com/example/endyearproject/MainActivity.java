@@ -71,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayAdapter<String> adp = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,grades);
         gradeSpinner.setAdapter(adp);
-
     }
 
     public void addOrEditStudent(View view) {
