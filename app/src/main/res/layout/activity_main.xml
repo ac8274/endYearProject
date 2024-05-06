@@ -12,10 +12,13 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <Space
+        <TextView
+            android:id="@+id/titleTextView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="         Add/Edit student"
+            android:textSize="34sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -58,17 +61,18 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.3"
-                android:textSize="24sp"
-                tools:text="\nFamily Name:" />
+                android:text="Family Name:"
+                android:textSize="24sp" />
 
             <EditText
                 android:id="@+id/familyNameInput"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5"
+                android:layout_weight="1"
                 android:ems="10"
                 android:hint="Family Name"
                 android:inputType="text" />
+
         </LinearLayout>
 
         <Space
@@ -87,8 +91,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.35"
-                android:textSize="20sp"
-                tools:text="\nGrade:" />
+                android:text="\nGrade"
+                android:textSize="20sp" />
 
             <Spinner
                 android:id="@+id/gradeSpinner"
@@ -101,8 +105,8 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0.7"
-                android:textSize="24sp"
-                tools:text="Class Number:" />
+                android:text="\nClass Number:"
+                android:textSize="16sp" />
 
             <EditText
                 android:id="@+id/classNumberInput"
@@ -124,7 +128,25 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:orientation="horizontal"></LinearLayout>
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/vaccination1Button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="vaccinationForm1"
+                android:text="Vaccination 1" />
+
+            <Button
+                android:id="@+id/vaccination2Button"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:onClick="vaccinationForm2"
+                android:text="Vaccination 2" />
+
+        </LinearLayout>
 
         <Space
             android:layout_width="match_parent"
@@ -132,10 +154,11 @@
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/button"
+            android:id="@+id/submitButton"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="Submit" />
+            android:text="Submit"
+            android:onClick="addOrEditStudent"/>
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
