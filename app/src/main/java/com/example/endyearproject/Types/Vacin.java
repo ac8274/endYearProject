@@ -1,22 +1,22 @@
 package com.example.endyearproject.Types;
 
-import java.util.Date;
+import java.util.Calendar;
 
 public class Vacin {
     private String placeName;
-    private Date date;
+    private Calendar date;
 
     public Vacin()
     {
         placeName = "";
-        date = new Date();
+        date = Calendar.getInstance();
     }
-    public Vacin(String placeName , Date date)
+    public Vacin(String placeName , Calendar date)
     {
         this.placeName = placeName;
         this.date = date;
     }
-    public void setDate(Date date)
+    public void setDate(Calendar date)
     {
         this.date = date;
     }
@@ -24,7 +24,7 @@ public class Vacin {
     {
         this.placeName = placeName;
     }
-    public Date getDate()
+    public Calendar getDate()
     {
         return this.date;
     }
