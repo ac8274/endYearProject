@@ -22,8 +22,8 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:ems="10"
+            android:hint="Name"
             android:inputType="text"
-            android:text="Name"
             android:textSize="12sp" />
     </LinearLayout>
 
@@ -46,7 +46,9 @@
             android:focusable="false"
             android:focusableInTouchMode="false"
             android:hint="Date"
-            android:inputType="date|datetime" />
+            android:inputType="date|datetime"
+            android:onClick="chooseDate"/>
+
     </LinearLayout>
 
 </android.widget.LinearLayout>

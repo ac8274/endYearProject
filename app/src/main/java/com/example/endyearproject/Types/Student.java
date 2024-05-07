@@ -3,6 +3,7 @@ package com.example.endyearproject.Types;
 public class Student {
     private String privateName;
     private String familyName;
+    private int personalID;
     private int grade;
     private int classNum;
     private Vacin Vacination1;
@@ -14,21 +15,24 @@ public class Student {
         this.familyName = "";
         this.grade = -1;
         this.classNum = -1;
+        this.personalID = -1;
         this.Vacination1 = new Vacin();
         this.Vacination2 = new Vacin();
         this.canVacinate = false;
     }
-    public Student(String privateName, String familyName, int grade, int classNum, Vacin Vacination1
+    public Student(String privateName, String familyName, int grade, int classNum, int personalID, Vacin Vacination1
     , Vacin Vacination2, boolean canVacinate)
     {
         this.privateName = privateName;
         this.familyName =familyName;
         this.grade = grade;
         this.classNum = classNum;
+        this.personalID = personalID;
         this.Vacination1 = Vacination1;
         this.Vacination2 = Vacination2;
         this.canVacinate = canVacinate;
     }
+    public void setPersonalID(int ID) {this.personalID = ID;}
     public void setPrivateName(String privateName)
     {
         this.privateName = privateName;
@@ -57,6 +61,7 @@ public class Student {
     {
         this.canVacinate = canVacinate;
     }
+    public int getPersonalID(){return this.personalID;}
     public String getPrivateName()
     {
         return this.privateName;
