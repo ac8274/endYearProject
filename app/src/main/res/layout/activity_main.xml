@@ -98,7 +98,7 @@
                 android:id="@+id/gradeSpinner"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="0.5" />
+                android:layout_weight="0.6" />
 
             <TextView
                 android:id="@+id/classNumTextView"
@@ -163,7 +163,13 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Can Vacinate?" />
+                android:showText="true"
+                android:text="Can Vacinate?"
+                android:textColor="#F44336"
+                android:textOff="No"
+                android:textOn="Yes"
+                android:thumbTint="#00BCD4"
+                android:trackTint="#F44336" />
 
             <Space
                 android:layout_width="0dp"

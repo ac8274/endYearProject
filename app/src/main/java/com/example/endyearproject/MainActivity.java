@@ -28,7 +28,8 @@ import com.example.endyearproject.Types.Vacin;
 import java.util.Calendar;
 
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
+{
     AlertDialog.Builder adb;
     TextView titleTextView;
     TextView nameTextView;
@@ -51,7 +52,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     int currentVaccine;
     EditText editTextDate;
     String[] grades={"1","2","3","4","5","6","7","8","9","10","11","12"};
-    String[] vacins_date_text;
     int gradeNum;
     @Override
     protected void onStart() {
@@ -61,7 +61,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         titleTextView = findViewById(R.id.titleTextView);
@@ -84,14 +85,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         gradeSpinner.setOnItemSelectedListener(this);
 
         vacins = new Vacin[2];
-        vacins_date_text = new String[2];
         setUpVariubles();
     }
 
     public void setUpVariubles()
     {
-        vacins_date_text[0] = "";
-        vacins_date_text[1] = "";
         vacins[0] = new Vacin();
         vacins[0].setDate(null);
         vacins[1] = new Vacin();
@@ -104,29 +102,71 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 personalNameInput.getText().toString().isEmpty());
     }
 
-    public void addOrEditStudent(View view) {
+    public void addOrEditStudent(View view)
+    {
         if(isNotEmpty())
         {
-            Student student = new Student(personalNameInput.getText().toString(),familyNameInput.getText().toString(),gradeNum,Integer.valueOf(classNumTextView.getText().toString()),
+            Student student = new Student(personalNameInput.getText().toString(),familyNameInput.getText().toString(),gradeNum,Integer.valueOf(classNumberInput.getText().toString()),
                     Integer.valueOf(studentPersonIdEditTextView.getText().toString()),vacins[0],vacins[1],isVacinatable.isChecked());
-            setUpVariubles();
             String childName = familyNameInput.getText().toString() + " " + personalNameInput.getText().toString();
-            refSchool.child(Integer.toString(gradeNum)).child(classNumTextView.getText().toString()).child(childName).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
+            refSchool.child(getStateString()).child(Integer.toString(gradeNum)).child(classNumberInput.getText().toString()).child(childName).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
+            if(true == true) {
+                setUpVariubles();
+                personalNameInput.setText("");
+                familyNameInput.setText("");
+                gradeSpinner.setSelection(0);
+                gradeNum = 1;
+                classNumberInput.setText("");
+                studentPersonIdEditTextView.setText("");
+                isVacinatable.setChecked(false);
+            }
         }
     }
 
+    public String getStateString()
+    {
+        if(isVacinatable.isChecked())
+        {
+            return "can Vaccinate";
+        }
+        else {
+            return "can't Vaccinate";
+        }
+    }
+
+    public void vaccinationForm1(View view)
+    {
+        currentVaccine = 0;
+        showAlertDialog(1);
+    }
 
 
-    public void vaccinationForm1(View view) {
+    public void vaccinationForm2(View view)
+    {
+        currentVaccine = 1;
+        showAlertDialog(2);
+    }
+
+    public void showAlertDialog(int vacinOption)
+    {
         if(isVacinatable.isChecked()) {
-            currentVaccine = 0;
+
             LinearLayout mydialog = (LinearLayout) getLayoutInflater().inflate(R.layout.vaccination_form, null);
             TextView textViewAddress = (TextView) mydialog.findViewById(R.id.textViewAddress);
             TextView textViewDate = (TextView) mydialog.findViewById(R.id.textViewDate);
             EditText editTextName = (EditText) mydialog.findViewById(R.id.editTextName);
             editTextDate = (EditText) mydialog.findViewById(R.id.editTextDate);
-            editTextDate.setText(vacins_date_text[currentVaccine]);
-
+            if(vacins[currentVaccine].getDate() == null)
+            {
+                editTextDate.setText("");
+            }
+            else {
+                int year = vacins[currentVaccine].getDate().get(Calendar.YEAR);
+                int month = vacins[currentVaccine].getDate().get(Calendar.MONTH);
+                int day = vacins[currentVaccine].getDate().get(Calendar.DAY_OF_MONTH);
+                editTextDate.setText(day + "/" + month + "/" + year);
+            }
+            editTextName.setText(vacins[currentVaccine].getPlaceName());
             DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -141,9 +181,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             };
 
             adb = new AlertDialog.Builder(this);
-
+            adb.setCancelable(false);
             adb.setView(mydialog);
-            adb.setTitle("Vacination Number 1 form");
+            adb.setTitle("Vacination Number "+Integer.toString(vacinOption)+" form");
             adb.setPositiveButton("Save", myclick);
             adb.setNegativeButton("Discard", myclick);
 
@@ -151,44 +191,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-
-    public void vaccinationForm2(View view) {
-        if(isVacinatable.isChecked()) {
-            currentVaccine = 1;
-            LinearLayout mydialog = (LinearLayout) getLayoutInflater().inflate(R.layout.vaccination_form, null);
-            TextView textViewAddress = (TextView) mydialog.findViewById(R.id.textViewAddress);
-            TextView textViewDate = (TextView) mydialog.findViewById(R.id.textViewDate);
-            EditText editTextName = (EditText) mydialog.findViewById(R.id.editTextName);
-            editTextDate = (EditText) mydialog.findViewById(R.id.editTextDate);
-            editTextDate.setText(vacins_date_text[currentVaccine]);
-
-            DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-
-                        vacins[currentVaccine].setPlaceName(editTextName.getText().toString());
-                        int[] dates = getDates();
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.set(dates[2], dates[1], dates[0]);
-                        vacins[currentVaccine].setDate(calendar);
-
-                    }
-                }
-            };
-
-            adb = new AlertDialog.Builder(this);
-
-            adb.setView(mydialog);
-            adb.setTitle("Vacination Number 2 form");
-            adb.setPositiveButton("Save", myclick);
-            adb.setNegativeButton("Discard", myclick);
-
-            adb.show();
-        }
-    }
-
-    public void chooseDate(View view) {
+    public void chooseDate(View view)
+    {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -208,7 +212,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     public void onDateSet(DatePicker view, int year,
                                           int monthOfYear, int dayOfMonth) {
                         String text_date= dayOfMonth + "/" + (monthOfYear + 1) + "/" + year;
-                        vacins_date_text[currentVaccine] = text_date;
                         editTextDate.setText(text_date);
 
                     }
@@ -228,17 +231,20 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             if(str.charAt(i) == '/')
             {
                 nums[counter] = Integer.valueOf(str2);
-                counter = counter++;
+                counter += 1;
                 str2 = "";
             }
-            str2 += str.charAt(i);
+            else {
+                str2 += str.charAt(i);
+            }
         }
         nums[counter] = Integer.valueOf(str2);
         return nums;
     }
 
     @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
+    {
         gradeNum = Integer.valueOf(grades[position]);
     }
 
