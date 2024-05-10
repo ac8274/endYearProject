@@ -106,10 +106,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         if(isNotEmpty())
         {
-            Student student = new Student(personalNameInput.getText().toString(),familyNameInput.getText().toString(),gradeNum,Integer.valueOf(classNumberInput.getText().toString()),
-                    Integer.valueOf(studentPersonIdEditTextView.getText().toString()),vacins[0],vacins[1],isVacinatable.isChecked());
+            Student student;
+            if(isVacinatable.isChecked())
+            {
+                student = new Student(personalNameInput.getText().toString(),familyNameInput.getText().toString(),gradeNum,Integer.valueOf(classNumberInput.getText().toString()),
+                        Integer.valueOf(studentPersonIdEditTextView.getText().toString()),vacins[0],vacins[1],isVacinatable.isChecked());
+            }
+            else
+            {
+                student =  new Student(personalNameInput.getText().toString(),familyNameInput.getText().toString(),gradeNum,Integer.valueOf(classNumberInput.getText().toString()),
+                        Integer.valueOf(studentPersonIdEditTextView.getText().toString()),null,null,isVacinatable.isChecked());
+            }
             String childName = familyNameInput.getText().toString() + " " + personalNameInput.getText().toString();
-            refSchool.child(getStateString()).child(Integer.toString(gradeNum)).child(classNumberInput.getText().toString()).child(childName).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
+            refSchool.child(getStateString(student)).child(Integer.toString(gradeNum)).child(classNumberInput.getText().toString()).child(childName).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
             if(true == true) {
                 setUpVariubles();
                 personalNameInput.setText("");
@@ -123,9 +132,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
 
-    public String getStateString()
+    public static String getStateString(Student other)
     {
-        if(isVacinatable.isChecked())
+        if(other.getCanVacinate())
         {
             return "can Vaccinate";
         }
@@ -149,7 +158,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     public void showAlertDialog(int vacinOption)
     {
-        if(isVacinatable.isChecked()) {
+        if(isVacinatable.isChecked())
+        {
 
             LinearLayout mydialog = (LinearLayout) getLayoutInflater().inflate(R.layout.vaccination_form, null);
             TextView textViewAddress = (TextView) mydialog.findViewById(R.id.textViewAddress);
@@ -187,6 +197,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             adb.setPositiveButton("Save", myclick);
             adb.setNegativeButton("Discard", myclick);
 
+            adb.show();
+        }
+        else
+        {
+            adb = new AlertDialog.Builder(this);
+            adb.setTitle("Person Can not Vaccinate");
             adb.show();
         }
     }
