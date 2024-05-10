@@ -6,6 +6,8 @@ import android.app.DatePickerDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Adapter;
 import android.widget.AdapterView;
@@ -19,9 +21,12 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.endyearproject.Types.Expiremental_None_Intent_Transfer;
+import com.example.endyearproject.Types.MenuTitels;
 import com.example.endyearproject.Types.Student;
 import com.example.endyearproject.Types.Vacin;
 
@@ -88,12 +93,81 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         setUpVariubles();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+//
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int st = item.getItemId();
+        if (st == R.id.AddStudentActivity) {
+
+        } else if (st == R.id.CreditsActivity) {
+
+        } else if (st == R.id.StudentsListActivity) {
+            Intent si = new Intent(this,studentList.class);
+            startActivity(si);
+        }
+        else {
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(false) {
+            super.onBackPressed();
+        }
+        // making the user be made to use general menu
+    }
+
+    public void checker()
+    {
+        Expiremental_None_Intent_Transfer exp = new Expiremental_None_Intent_Transfer();
+        if(exp.destination.equals(MenuTitels.add_activity))
+        {
+            cleaner();
+        }
+        else if(exp.destination.equals(MenuTitels.edit_activity))
+        {
+            editSetUp(exp.studentToGiveBack);
+        }
+
+        else if (exp.destination.equals(MenuTitels.all_students))
+        {
+            Intent intent = new Intent(this,studentList.class);
+            startActivity(intent);
+        }
+    }
+
+    private void editSetUp(Student student)
+    {
+        personalNameInput.setText(student.getPrivateName());
+        familyNameInput.setText(student.getFamilyName());
+        classNumberInput.setText(Integer.toString(student.getClassNum()));
+        studentPersonIdEditTextView.setText(Integer.toString(student.getPersonalID()));
+        gradeSpinner.setSelection(student.getGrade()-1);
+        vacins[0] = student.getVacination1();
+        vacins[1] = student.getVacination2();
+        isVacinatable.setChecked(student.getCanVacinate());
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        checker();
+    }
+
     public void setUpVariubles()
     {
         vacins[0] = new Vacin();
-        vacins[0].setDate(null);
+        vacins[0].setDate("");
         vacins[1] = new Vacin();
-        vacins[1].setDate(null);
+        vacins[1].setDate("");
     }
 
     public boolean isNotEmpty()
@@ -119,19 +193,27 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             }
             String childName = familyNameInput.getText().toString() + " " + personalNameInput.getText().toString();
             refSchool.child(getStateString(student)).child(Integer.toString(gradeNum)).child(classNumberInput.getText().toString()).child(childName).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
-            if(true == true) {
-                setUpVariubles();
-                personalNameInput.setText("");
-                familyNameInput.setText("");
-                gradeSpinner.setSelection(0);
-                gradeNum = 1;
-                classNumberInput.setText("");
-                studentPersonIdEditTextView.setText("");
-                isVacinatable.setChecked(false);
+            Expiremental_None_Intent_Transfer exp = new Expiremental_None_Intent_Transfer();
+            if(exp.destination.equals(MenuTitels.add_activity)) {
+                cleaner();
+            }
+            else {
+                childName = exp.studentToGiveBack.getFamilyName() + " " +exp.studentToGiveBack.getPrivateName();
+                refSchool.child(getStateString(exp.studentToGiveBack)).child(Integer.toString(exp.studentToGiveBack.getGrade())).child(Integer.toString(exp.studentToGiveBack.getClassNum())).child(childName).child(Integer.toString(exp.studentToGiveBack.getPersonalID())).setValue(null);
             }
         }
     }
-
+    public void cleaner()
+    {
+        setUpVariubles();
+        personalNameInput.setText("");
+        familyNameInput.setText("");
+        gradeSpinner.setSelection(0);
+        gradeNum = 1;
+        classNumberInput.setText("");
+        studentPersonIdEditTextView.setText("");
+        isVacinatable.setChecked(false);
+    }
     public static String getStateString(Student other)
     {
         if(other.getCanVacinate())
@@ -166,26 +248,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             TextView textViewDate = (TextView) mydialog.findViewById(R.id.textViewDate);
             EditText editTextName = (EditText) mydialog.findViewById(R.id.editTextName);
             editTextDate = (EditText) mydialog.findViewById(R.id.editTextDate);
-            if(vacins[currentVaccine].getDate() == null)
-            {
-                editTextDate.setText("");
-            }
-            else {
-                int year = vacins[currentVaccine].getDate().get(Calendar.YEAR);
-                int month = vacins[currentVaccine].getDate().get(Calendar.MONTH);
-                int day = vacins[currentVaccine].getDate().get(Calendar.DAY_OF_MONTH);
-                editTextDate.setText(day + "/" + month + "/" + year);
-            }
+            editTextDate.setText(vacins[currentVaccine].getDate());
+
             editTextName.setText(vacins[currentVaccine].getPlaceName());
             DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         vacins[currentVaccine].setPlaceName(editTextName.getText().toString());
-                        int[] dates = getDates();
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.set(dates[2], dates[1], dates[0]);
-                        vacins[currentVaccine].setDate(calendar);
+                        vacins[currentVaccine].setDate(editTextDate.getText().toString());
                     }
                 }
             };
@@ -235,27 +306,6 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 year, month, day);
 
         datePickerDialog.show();
-    }
-    public int[] getDates()
-    {
-        int[] nums = new int[3];
-        int counter = 0;
-        String str = editTextDate.getText().toString();
-        String str2 = "";
-        for(int i=0; i< str.length(); i++)
-        {
-            if(str.charAt(i) == '/')
-            {
-                nums[counter] = Integer.valueOf(str2);
-                counter += 1;
-                str2 = "";
-            }
-            else {
-                str2 += str.charAt(i);
-            }
-        }
-        nums[counter] = Integer.valueOf(str2);
-        return nums;
     }
 
     @Override

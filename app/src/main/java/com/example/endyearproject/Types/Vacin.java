@@ -4,19 +4,19 @@ import java.util.Calendar;
 
 public class Vacin {
     private String placeName;
-    private Calendar date;
+    private String date;
 
     public Vacin()
     {
         placeName = "";
-        date = Calendar.getInstance();
+        date = "";
     }
-    public Vacin(String placeName , Calendar date)
+    public Vacin(String placeName , String date)
     {
         this.placeName = placeName;
         this.date = date;
     }
-    public void setDate(Calendar date)
+    public void setDate(String date)
     {
         this.date = date;
     }
@@ -24,7 +24,7 @@ public class Vacin {
     {
         this.placeName = placeName;
     }
-    public Calendar getDate()
+    public String getDate()
     {
         return this.date;
     }

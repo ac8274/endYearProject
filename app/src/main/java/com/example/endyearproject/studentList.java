@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.ContextMenu;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.endyearproject.Types.Expiremental_None_Intent_Transfer;
+import com.example.endyearproject.Types.MenuTitels;
 import com.example.endyearproject.Types.Student;
 
 import java.util.ArrayList;
@@ -57,13 +60,45 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
         getStudentsList();
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+    //
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+
+        int st = item.getItemId();
+        if (st == R.id.AddStudentActivity) {
+            Expiremental_None_Intent_Transfer exp = new Expiremental_None_Intent_Transfer();
+            exp.destination = MenuTitels.add_activity;
+            finish();
+        } else if (st == R.id.CreditsActivity){
+
+        } else if (st == R.id.StudentsListActivity) {
+        }
+        else {
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(false) {
+            super.onBackPressed();
+        }
+        // making the user be made to use general menu
+    }
+
     private void getStudentsList() {
-        refSchool.addListenerForSingleValueEvent(new ValueEventListener() {
+        refSchool.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 studentsList.clear();
                 for(DataSnapshot vacinatable: snapshot.getChildren()) {
-                    for (DataSnapshot gradeData : snapshot.getChildren()) {
+                    for (DataSnapshot gradeData : vacinatable.getChildren()) {
                         for (DataSnapshot classData : gradeData.getChildren()) {
                             for (DataSnapshot namedData : classData.getChildren()) {
                                 for (DataSnapshot idData : namedData.getChildren())
@@ -93,14 +128,16 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
 
     public boolean onContextItemSelected(MenuItem item) {
         String pos = item.getTitle().toString();
+        Student stu = studentsList.get(listViewPos);
         if(pos.equals("Delete"))
         {
-            Student stu = studentsList.get(listViewPos);
             String childName = stu.getFamilyName() + " " + stu.getPrivateName();
             refSchool.child(MainActivity.getStateString(stu)).child(Integer.toString(stu.getGrade())).child(Integer.toString(stu.getClassNum())).child(childName).child(Integer.toString(stu.getPersonalID())).setValue(null);
         }
         else
         {
+            Expiremental_None_Intent_Transfer.studentToGiveBack = stu;
+            Expiremental_None_Intent_Transfer.destination = MenuTitels.edit_activity;
             finish();
         }
         return super.onContextItemSelected(item);

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id = "@+id/AddStudentActivity"
+        android:title="AddStudent"
+        android:orderInCategory="100"/>
+    <item
+        android:id = "@+id/StudentsListActivity"
+        android:title="AllStudents"
+        android:orderInCategory="200" />
+    <item
+        android:id = "@+id/CreditsActivity"
+        android:title="Credits"
+        android:orderInCategory="300"/>
+    <item
+        android:id = "@+id/FilteredStudentsActivity"
+        android:title="FilteredStudents"
+        android:orderInCategory="400"/>
+</menu>
