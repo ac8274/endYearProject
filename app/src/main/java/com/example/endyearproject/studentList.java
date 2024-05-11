@@ -68,14 +68,14 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
     //
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
         int st = item.getItemId();
+        Expiremental_None_Intent_Transfer enit = new Expiremental_None_Intent_Transfer();
         if (st == R.id.AddStudentActivity) {
-            Expiremental_None_Intent_Transfer exp = new Expiremental_None_Intent_Transfer();
-            exp.destination = MenuTitels.add_activity;
+            enit.destination = MenuTitels.add_activity;
             finish();
         } else if (st == R.id.CreditsActivity){
-
+            enit.destination = MenuTitels.credits_activity;
+            finish();
         } else if (st == R.id.StudentsListActivity) {
         }
         else {

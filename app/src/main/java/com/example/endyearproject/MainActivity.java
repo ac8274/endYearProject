@@ -101,14 +101,15 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 //
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-
+        Intent si;
         int st = item.getItemId();
         if (st == R.id.AddStudentActivity) {
 
         } else if (st == R.id.CreditsActivity) {
-
+            si = new Intent(this, credits.class);
+            startActivity(si);
         } else if (st == R.id.StudentsListActivity) {
-            Intent si = new Intent(this,studentList.class);
+            si = new Intent(this,studentList.class);
             startActivity(si);
         }
         else {
@@ -136,12 +137,17 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             editSetUp(exp.studentToGiveBack);
         }
-
         else if (exp.destination.equals(MenuTitels.all_students))
         {
             Intent intent = new Intent(this,studentList.class);
             startActivity(intent);
         }
+        else if (exp.destination.equals(MenuTitels.credits_activity))
+        {
+            Intent intent = new Intent(this,credits.class);
+            startActivity(intent);
+        }
+
     }
 
     private void editSetUp(Student student)
