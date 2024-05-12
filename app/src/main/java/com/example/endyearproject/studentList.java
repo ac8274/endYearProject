@@ -70,16 +70,25 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int st = item.getItemId();
         Expiremental_None_Intent_Transfer enit = new Expiremental_None_Intent_Transfer();
-        if (st == R.id.AddStudentActivity) {
+        if (st == R.id.AddStudentActivity)
+        {
             enit.destination = MenuTitels.add_activity;
             finish();
-        } else if (st == R.id.CreditsActivity){
+        }
+        else if (st == R.id.CreditsActivity)
+        {
             enit.destination = MenuTitels.credits_activity;
             finish();
-        } else if (st == R.id.StudentsListActivity) {
         }
-        else {
-
+        else if (st == R.id.FilteredStudentsActivity)
+        {
+            enit.destination = MenuTitels.filtered_students;
+            finish();
+        }
+        else if (st==R.id.ExitCall)
+        {
+            enit.destination = MenuTitels.exiCall;
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }
@@ -97,19 +106,10 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 studentsList.clear();
-                for(DataSnapshot vacinatable: snapshot.getChildren()) {
-                    for (DataSnapshot gradeData : vacinatable.getChildren()) {
-                        for (DataSnapshot classData : gradeData.getChildren()) {
-                            for (DataSnapshot namedData : classData.getChildren()) {
-                                for (DataSnapshot idData : namedData.getChildren())
-                                {
-                                    studentsList.add(idData.getValue(Student.class));
-                                }
-                            }
-                        }
-                    }
+                for(DataSnapshot idData: snapshot.getChildren())
+                {
+                    studentsList.add(idData.getValue(Student.class));
                 }
-
                 studentsAdapter.notifyDataSetChanged();
             }
 
@@ -132,7 +132,7 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
         if(pos.equals("Delete"))
         {
             String childName = stu.getFamilyName() + " " + stu.getPrivateName();
-            refSchool.child(MainActivity.getStateString(stu)).child(Integer.toString(stu.getGrade())).child(Integer.toString(stu.getClassNum())).child(childName).child(Integer.toString(stu.getPersonalID())).setValue(null);
+            refSchool.child(Integer.toString(stu.getPersonalID())).setValue(null);
         }
         else
         {

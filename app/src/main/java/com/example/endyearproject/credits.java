@@ -34,17 +34,25 @@ public class credits extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         int st = item.getItemId();
         Expiremental_None_Intent_Transfer enit = new Expiremental_None_Intent_Transfer();
-        if (st == R.id.AddStudentActivity) {
+        if (st == R.id.AddStudentActivity)
+        {
             enit.destination = MenuTitels.add_activity;
             finish();
-        } else if (st == R.id.CreditsActivity) {
-
-        } else if (st == R.id.StudentsListActivity) {
+        }
+        else if (st == R.id.FilteredStudentsActivity)
+        {
+            enit.destination = MenuTitels.filtered_students;
+            finish();
+        }
+        else if (st == R.id.StudentsListActivity)
+        {
             enit.destination = MenuTitels.all_students;
             finish();
         }
-        else {
-
+        else if (st==R.id.ExitCall)
+        {
+            enit.destination = MenuTitels.exiCall;
+            finish();
         }
         return super.onOptionsItemSelected(item);
     }

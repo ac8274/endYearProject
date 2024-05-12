@@ -103,14 +103,19 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         Intent si;
         int st = item.getItemId();
-        if (st == R.id.AddStudentActivity) {
-
+        if (st == R.id.FilteredStudentsActivity) {
+            si = new Intent(this, filteredStudentsActivity.class);
+            startActivity(si);
         } else if (st == R.id.CreditsActivity) {
             si = new Intent(this, credits.class);
             startActivity(si);
         } else if (st == R.id.StudentsListActivity) {
             si = new Intent(this,studentList.class);
             startActivity(si);
+        }
+        else if(st == R.id.ExitCall)
+        {
+            finish();
         }
         else {
 
@@ -133,6 +138,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         {
             cleaner();
         }
+        else if(exp.destination.equals(MenuTitels.exiCall))
+        {
+            finish();
+        }
         else if(exp.destination.equals(MenuTitels.edit_activity))
         {
             editSetUp(exp.studentToGiveBack);
@@ -145,6 +154,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         else if (exp.destination.equals(MenuTitels.credits_activity))
         {
             Intent intent = new Intent(this,credits.class);
+            startActivity(intent);
+        }
+        else
+        {
+            Intent intent = new Intent(this, filteredStudentsActivity.class);
             startActivity(intent);
         }
 
@@ -197,17 +211,21 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 student =  new Student(personalNameInput.getText().toString(),familyNameInput.getText().toString(),gradeNum,Integer.valueOf(classNumberInput.getText().toString()),
                         Integer.valueOf(studentPersonIdEditTextView.getText().toString()),null,null,isVacinatable.isChecked());
             }
-            String childName = familyNameInput.getText().toString() + " " + personalNameInput.getText().toString();
-            refSchool.child(getStateString(student)).child(Integer.toString(gradeNum)).child(classNumberInput.getText().toString()).child(childName).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
+            refSchool.child(studentPersonIdEditTextView.getText().toString()).setValue(student);
             Expiremental_None_Intent_Transfer exp = new Expiremental_None_Intent_Transfer();
             if(exp.destination.equals(MenuTitels.add_activity)) {
                 cleaner();
             }
             else {
-                childName = exp.studentToGiveBack.getFamilyName() + " " +exp.studentToGiveBack.getPrivateName();
-                refSchool.child(getStateString(exp.studentToGiveBack)).child(Integer.toString(exp.studentToGiveBack.getGrade())).child(Integer.toString(exp.studentToGiveBack.getClassNum())).child(childName).child(Integer.toString(exp.studentToGiveBack.getPersonalID())).setValue(null);
+                showEditSuccesfullDialog();
             }
         }
+    }
+    public void showEditSuccesfullDialog()
+    {
+        adb = new AlertDialog.Builder(this);
+        adb.setTitle("Person was saved successfully");
+        adb.show();
     }
     public void cleaner()
     {

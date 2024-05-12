@@ -6,4 +6,5 @@ public class MenuTitels {
     public static String all_students = "StudentsListActivity";
     public static String filtered_students = "FilteredStudentsActivity";
     public static String credits_activity = "CreditsActivity";
+    public static String exiCall = "Exit";
 }
