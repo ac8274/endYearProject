@@ -108,7 +108,10 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
                 studentsList.clear();
                 for(DataSnapshot idData: snapshot.getChildren())
                 {
-                    studentsList.add(idData.getValue(Student.class));
+                    for(DataSnapshot studentData: idData.getChildren())
+                    {
+                        studentsList.add(studentData.getValue(Student.class));
+                    }
                 }
                 studentsAdapter.notifyDataSetChanged();
             }
@@ -132,7 +135,7 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
         if(pos.equals("Delete"))
         {
             String childName = stu.getFamilyName() + " " + stu.getPrivateName();
-            refSchool.child(Integer.toString(stu.getPersonalID())).setValue(null);
+            refSchool.child(MainActivity.getStateString(stu)).child(Integer.toString(stu.getPersonalID())).setValue(null);
         }
         else
         {

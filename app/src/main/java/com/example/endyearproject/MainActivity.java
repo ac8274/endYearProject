@@ -200,6 +200,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         if(isNotEmpty())
         {
+            Expiremental_None_Intent_Transfer exp = new Expiremental_None_Intent_Transfer();
             Student student;
             if(isVacinatable.isChecked())
             {
@@ -211,12 +212,13 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 student =  new Student(personalNameInput.getText().toString(),familyNameInput.getText().toString(),gradeNum,Integer.valueOf(classNumberInput.getText().toString()),
                         Integer.valueOf(studentPersonIdEditTextView.getText().toString()),null,null,isVacinatable.isChecked());
             }
-            refSchool.child(studentPersonIdEditTextView.getText().toString()).setValue(student);
-            Expiremental_None_Intent_Transfer exp = new Expiremental_None_Intent_Transfer();
             if(exp.destination.equals(MenuTitels.add_activity)) {
+                refSchool.child(getStateString(student)).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
                 cleaner();
             }
             else {
+                refSchool.child(getStateString(exp.studentToGiveBack)).child(Integer.toString(exp.studentToGiveBack.getPersonalID())).setValue(null);
+                refSchool.child(getStateString(student)).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
                 showEditSuccesfullDialog();
             }
         }

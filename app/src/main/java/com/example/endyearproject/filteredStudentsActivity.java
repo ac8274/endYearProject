@@ -3,6 +3,7 @@ package com.example.endyearproject;
 import static com.example.endyearproject.database.FBref.refSchool;
 
 import android.app.DownloadManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
@@ -10,6 +11,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -39,6 +42,7 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
     ArrayList<Student> studentsList;
     studentAdapter studentsAdapter;
     String[] filters = {"Can't Vaccinate","Vacinatable","Vacinatable by grade","Vacinatable by class number"};
+    String gradeText;
     ValueEventListener VEL;
     Query query;
     Intent gi;
@@ -115,6 +119,7 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
         else if (st == R.id.StudentsListActivity)
         {
             enit.destination = MenuTitels.all_students;
+            finish();
         }
         else if (st==R.id.ExitCall)
         {
@@ -124,34 +129,33 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
         return super.onOptionsItemSelected(item);
     }
 
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+    private void changeVEL(int position)
+    {
         if(position == 0)
         {
-            query.removeEventListener(VEL);
-            query = refSchool.orderByChild("canVacinate").equalTo(false);
-            query.addValueEventListener(VEL);
-            }
+            setUpVel();
+        }
         else if(position == 1)
         {
-            query.removeEventListener(VEL);
-            query = refSchool.orderByChild("canVacinate").equalTo(true);
-            query.addValueEventListener(new ValueEventListener() {
+            VEL = new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    studentsList.clear();
                     for(DataSnapshot ds:snapshot.getChildren())
                     {
-                        studentsList.add(ds.getValue(Student.class));
+                        Student st = ds.getValue(Student.class);
+                        if(!st.getVacination1().getDate().equals("") && !st.getVacination2().getDate().equals(""))
+                            studentsList.add(st);
                     }
 
                     Collections.sort(studentsList, new Comparator<Student>() {
                         @Override
                         public int compare(Student o1, Student o2) {
-                            if(o1.getGrade() > o2.getGrade())
+                            if(o1.getGrade() < o2.getGrade())
                             {
                                 return 1;
                             }
-                            else if (o1.getGrade() < o2.getGrade())
+                            else if (o1.getGrade() > o2.getGrade())
                             {
                                 return -1;
                             }
@@ -168,15 +172,151 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
                 public void onCancelled(@NonNull DatabaseError error) {
 
                 }
-            });
+            };
         }
-        else if (position == 2)
+        else if(position == 2)
         {
+            VEL = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    studentsList.clear();
+                    for(DataSnapshot ds:snapshot.getChildren())
+                    {
+                        Student st = ds.getValue(Student.class);
+                        if(!st.getVacination1().getDate().equals("") && !st.getVacination2().getDate().equals(""))
+                            studentsList.add(st);
+                    }
 
+                    Collections.sort(studentsList, new Comparator<Student>() {
+                        @Override
+                        public int compare(Student o1, Student o2) {
+                            if(o1.getClassNum() > o2.getClassNum())
+                            {
+                                return 1;
+                            }
+                            else if (o1.getClassNum() < o2.getClassNum())
+                            {
+                                return -1;
+                            }
+                            else
+                            {
+                                return 0;
+                            }
+                        }
+                    });
+                    studentsAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
         }
         else
         {
+            VEL = new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    studentsList.clear();
+                    for(DataSnapshot ds:snapshot.getChildren())
+                    {
+                        Student st = ds.getValue(Student.class);
+                        if(!st.getVacination1().getDate().equals("") && !st.getVacination2().getDate().equals(""))
+                            if(st.getGrade() == Integer.valueOf(gradeText))
+                                studentsList.add(st);
+                    }
 
+                    Collections.sort(studentsList, new Comparator<Student>() {
+                        @Override
+                        public int compare(Student o1, Student o2) {
+                            String string = o1.getFamilyName() + " " + o1.getPrivateName();
+                            String string2 = o2.getFamilyName() + " " + o2.getPrivateName();
+                            return string.compareTo(string2);
+                        }
+                    });
+                    studentsAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            };
+        }
+    }
+
+    private void createAD(int option)
+    {
+        LinearLayout mydialog = (LinearLayout) getLayoutInflater().inflate(R.layout.filtered_students_lv, null);
+        TextView gradeFADTV = mydialog.findViewById(R.id.gradeFADTV);
+        EditText editTextText2 = mydialog.findViewById(R.id.editTextText2);
+
+        DialogInterface.OnClickListener myclick = null;
+        if(option == 2)
+        {
+            myclick = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                        query = refSchool.child("can Vaccinate").orderByChild("grade").equalTo(Integer.valueOf(editTextText2.getText().toString()));
+                        query.addValueEventListener(VEL);
+                    }
+                }
+            };
+        }
+        else
+        {
+            TextView classNumberFADTV = mydialog.findViewById(R.id.classNumberFADTV);
+            EditText editTextText = mydialog.findViewById(R.id.editTextText);
+            myclick = new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (which == DialogInterface.BUTTON_POSITIVE) {
+                        gradeText = editTextText2.getText().toString();
+                        query = refSchool.child("can Vaccinate").orderByChild("classNum").equalTo(Integer.valueOf(editTextText.getText().toString()));
+                        changeVEL(option);
+                        query.addValueEventListener(VEL);
+                    }
+                }
+            };
+        }
+        adb = new AlertDialog.Builder(this);
+        adb.setCancelable(false);
+        adb.setView(mydialog);
+        adb.setTitle("choose  ");
+        adb.setPositiveButton("Save", myclick);
+        adb.setNegativeButton("Discard", myclick);
+        adb.show();
+    }
+
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        if(position == 0)
+        {
+            query.removeEventListener(VEL);
+            query = refSchool.child("can't Vaccinate");
+            changeVEL(position);
+            query.addValueEventListener(VEL);
+            }
+        else if(position == 1)
+        {
+            query.removeEventListener(VEL);
+            query = refSchool.child("can Vaccinate").orderByChild("grade");
+            changeVEL(position);
+            query.addValueEventListener(VEL);
+        }
+        else if (position == 2)
+        {
+            query.removeEventListener(VEL);
+            changeVEL(position);
+            createAD(position);
+        }
+        else
+        {
+            query.removeEventListener(VEL);
+            createAD(position);
         }
 
     }
