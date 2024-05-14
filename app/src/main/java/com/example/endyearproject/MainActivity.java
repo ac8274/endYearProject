@@ -191,8 +191,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public boolean isNotEmpty()
+    /* Description: */
     {
-        return !(studentPersonIdEditTextView.getText().toString().isEmpty() && classNumberInput.getText().toString().isEmpty() && familyNameInput.getText().toString().isEmpty() &&
+        return !(studentPersonIdEditTextView.getText().toString().isEmpty() || classNumberInput.getText().toString().isEmpty() || familyNameInput.getText().toString().isEmpty() ||
                 personalNameInput.getText().toString().isEmpty());
     }
 
@@ -221,6 +222,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 refSchool.child(getStateString(student)).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
                 showEditSuccesfullDialog();
             }
+        }
+        else
+        {
+            adb = new AlertDialog.Builder(this);
+            adb.setTitle("User must at least fill in everything except forms");
+            adb.show();
         }
     }
     public void showEditSuccesfullDialog()
@@ -268,33 +275,40 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     {
         if(isVacinatable.isChecked())
         {
+            if(currentVaccine == 1 && vacins[0].getDate().equals(""))
+            {
+                adb = new AlertDialog.Builder(this);
+                adb.setTitle("User hasn't filled out first vaccination form");
+                adb.show();
+            }
+            else
+            {
+                LinearLayout mydialog = (LinearLayout) getLayoutInflater().inflate(R.layout.vaccination_form, null);
+                TextView textViewAddress = (TextView) mydialog.findViewById(R.id.textViewAddress);
+                TextView textViewDate = (TextView) mydialog.findViewById(R.id.textViewDate);
+                EditText editTextName = (EditText) mydialog.findViewById(R.id.editTextName);
+                editTextDate = (EditText) mydialog.findViewById(R.id.editTextDate);
+                editTextDate.setText(vacins[currentVaccine].getDate());
 
-            LinearLayout mydialog = (LinearLayout) getLayoutInflater().inflate(R.layout.vaccination_form, null);
-            TextView textViewAddress = (TextView) mydialog.findViewById(R.id.textViewAddress);
-            TextView textViewDate = (TextView) mydialog.findViewById(R.id.textViewDate);
-            EditText editTextName = (EditText) mydialog.findViewById(R.id.editTextName);
-            editTextDate = (EditText) mydialog.findViewById(R.id.editTextDate);
-            editTextDate.setText(vacins[currentVaccine].getDate());
-
-            editTextName.setText(vacins[currentVaccine].getPlaceName());
-            DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (which == DialogInterface.BUTTON_POSITIVE) {
-                        vacins[currentVaccine].setPlaceName(editTextName.getText().toString());
-                        vacins[currentVaccine].setDate(editTextDate.getText().toString());
+                editTextName.setText(vacins[currentVaccine].getPlaceName());
+                DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        if (which == DialogInterface.BUTTON_POSITIVE)
+                        {
+                            vacins[currentVaccine].setPlaceName(editTextName.getText().toString());
+                            vacins[currentVaccine].setDate(editTextDate.getText().toString());
+                        }
                     }
-                }
-            };
-
-            adb = new AlertDialog.Builder(this);
-            adb.setCancelable(false);
-            adb.setView(mydialog);
-            adb.setTitle("Vacination Number "+Integer.toString(vacinOption)+" form");
-            adb.setPositiveButton("Save", myclick);
-            adb.setNegativeButton("Discard", myclick);
-
-            adb.show();
+                };
+                adb = new AlertDialog.Builder(this);
+                adb.setCancelable(false);
+                adb.setView(mydialog);
+                adb.setTitle("Vacination Number " + Integer.toString(vacinOption) + " form");
+                adb.setPositiveButton("Save", myclick);
+                adb.setNegativeButton("Discard", myclick);
+                adb.show();
+            }
         }
         else
         {

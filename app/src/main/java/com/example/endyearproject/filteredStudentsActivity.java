@@ -129,6 +129,14 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    public void onBackPressed() {
+        if(false) {
+            super.onBackPressed();
+        }
+        // making the user be made to use general menu
+    }
+
     private void changeVEL(int position)
     {
         if(position == 0)
@@ -222,7 +230,7 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
                     for(DataSnapshot ds:snapshot.getChildren())
                     {
                         Student st = ds.getValue(Student.class);
-                        if(!st.getVacination1().getDate().equals("") && !st.getVacination2().getDate().equals(""))
+                        if(!st.getVacination1().getDate().equals("") && !st.getVacination2().getDate().equals("")) // if student is fully vaccinated.
                             if(st.getGrade() == Integer.valueOf(gradeText))
                                 studentsList.add(st);
                     }
@@ -251,7 +259,6 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
         LinearLayout mydialog = (LinearLayout) getLayoutInflater().inflate(R.layout.filtered_students_lv, null);
         TextView gradeFADTV = mydialog.findViewById(R.id.gradeFADTV);
         EditText editTextText2 = mydialog.findViewById(R.id.editTextText2);
-
         DialogInterface.OnClickListener myclick = null;
         if(option == 2)
         {
@@ -259,8 +266,16 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
-                        query = refSchool.child("can Vaccinate").orderByChild("grade").equalTo(Integer.valueOf(editTextText2.getText().toString()));
-                        query.addValueEventListener(VEL);
+                        if(!editTextText2.getText().toString().equals(""))
+                        {
+                            query = refSchool.child("can Vaccinate").orderByChild("grade").equalTo(Integer.valueOf(editTextText2.getText().toString()));
+                            query.addValueEventListener(VEL);
+                        }
+                        else
+                        {
+                            studentsList.clear();
+                            studentsAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
             };
@@ -274,9 +289,17 @@ public class filteredStudentsActivity extends AppCompatActivity implements Adapt
                 public void onClick(DialogInterface dialog, int which) {
                     if (which == DialogInterface.BUTTON_POSITIVE) {
                         gradeText = editTextText2.getText().toString();
-                        query = refSchool.child("can Vaccinate").orderByChild("classNum").equalTo(Integer.valueOf(editTextText.getText().toString()));
-                        changeVEL(option);
-                        query.addValueEventListener(VEL);
+                        if(!editTextText.getText().toString().equals("") && !gradeText.equals(""))
+                        {
+                            query = refSchool.child("can Vaccinate").orderByChild("classNum").equalTo(Integer.valueOf(editTextText.getText().toString()));
+                            changeVEL(option);
+                            query.addValueEventListener(VEL);
+                        }
+                        else
+                        {
+                            studentsList.clear();
+                            studentsAdapter.notifyDataSetChanged();
+                        }
                     }
                 }
             };
