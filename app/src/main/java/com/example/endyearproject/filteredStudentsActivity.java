@@ -35,6 +35,9 @@ import java.util.Collections;
 import java.util.Comparator;
 
 public class filteredStudentsActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener{
+    /**
+     * Description: Class is used for showing all students currently in database to the user with filtering options.
+     */
     AlertDialog.Builder adb;
     TextView filterTV;
     Spinner filterChoisesSpinner;

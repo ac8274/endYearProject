@@ -14,6 +14,9 @@ import com.example.endyearproject.Types.MenuTitels;
 
 
 public class credits extends AppCompatActivity {
+    /**
+     * Description: Activity which shows who made the application.
+     */
     TextView creditsTextView;
     Intent gi;
     @Override

@@ -35,6 +35,9 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener
 {
+    /**
+     * Description: Function used for adding or editing students in database.
+     */
     AlertDialog.Builder adb;
     TextView titleTextView;
     TextView nameTextView;
@@ -51,19 +54,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     Button vaccination2Button;
     Button submitButton;
     Switch isVacinatable;
-    boolean isFirstTime = false;
-    boolean adding;
     Vacin [] vacins;
-    int currentVaccine;
     EditText editTextDate;
     String[] grades={"1","2","3","4","5","6","7","8","9","10","11","12"};
     int gradeNum;
-    @Override
-    protected void onStart() {
-        super.onStart();
-        isFirstTime = true;
-        adding = true;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -132,6 +126,11 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void checker()
+    /**
+     * @author Arie CHernobilsky ariechera@gmail.com or ac8274@bs.amalnet.k12.il
+     * Description: Function activates onResume and checks the contents of destination, and starts or continues activity in the destination.
+     * @see Expiremental_None_Intent_Transfer
+     */
     {
         Expiremental_None_Intent_Transfer exp = new Expiremental_None_Intent_Transfer();
         if(exp.destination.equals(MenuTitels.add_activity))
@@ -165,6 +164,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     private void editSetUp(Student student)
+    /**
+     * Description: Function fills in the screen with the students provided info.
+     * @param student: Student object which has he info to be extracted.
+     */
     {
         personalNameInput.setText(student.getPrivateName());
         familyNameInput.setText(student.getFamilyName());
@@ -183,6 +186,9 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void setUpVariubles()
+    /**
+     *  Description: Function sets up the vaccinations object to a stater form.
+     */
     {
         vacins[0] = new Vacin();
         vacins[0].setDate("");
@@ -191,13 +197,18 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public boolean isNotEmpty()
-    /* Description: */
+    /** Descripton: Function checks if all the necessary fields were filled in the Edit Texts.
+     * Necessary fields: ID, Family Name, Personal Name, Class Number.
+     * @return The result of the check.*/
     {
         return !(studentPersonIdEditTextView.getText().toString().isEmpty() || classNumberInput.getText().toString().isEmpty() || familyNameInput.getText().toString().isEmpty() ||
                 personalNameInput.getText().toString().isEmpty());
     }
 
     public void addOrEditStudent(View view)
+    /** Description: Function adds a new student or changes the data of an existing user in the database.
+     * @param view: Submit button view.
+     */
     {
         if(isNotEmpty())
         {
@@ -214,12 +225,12 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                         Integer.valueOf(studentPersonIdEditTextView.getText().toString()),null,null,isVacinatable.isChecked());
             }
             if(exp.destination.equals(MenuTitels.add_activity)) {
-                refSchool.child(getStateString(student)).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
+                refSchool.child(getStateString(student)).child(studentPersonIdEditTextView.getText().toString()).setValue(student); // saves new student data
                 cleaner();
             }
             else {
-                refSchool.child(getStateString(exp.studentToGiveBack)).child(Integer.toString(exp.studentToGiveBack.getPersonalID())).setValue(null);
-                refSchool.child(getStateString(student)).child(studentPersonIdEditTextView.getText().toString()).setValue(student);
+                refSchool.child(getStateString(exp.studentToGiveBack)).child(Integer.toString(exp.studentToGiveBack.getPersonalID())).setValue(null); // deletes old user data
+                refSchool.child(getStateString(student)).child(studentPersonIdEditTextView.getText().toString()).setValue(student); // saves new student data
                 showEditSuccesfullDialog();
             }
         }
@@ -231,12 +242,14 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         }
     }
     public void showEditSuccesfullDialog()
+    /** Description: Function creates a AlertDialog which tells the user that the edit was successful.*/
     {
         adb = new AlertDialog.Builder(this);
         adb.setTitle("Person was saved successfully");
         adb.show();
     }
     public void cleaner()
+    /** Descriptions: Function cleans the screen and returns the screen to its starter form.*/
     {
         setUpVariubles();
         personalNameInput.setText("");
@@ -248,6 +261,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         isVacinatable.setChecked(false);
     }
     public static String getStateString(Student other)
+    /** Description: Function Checks if the student provided is able to be vaccinated and returns a string accordingly.
+     * @param other: Student object which the check will be applied on.
+     * @return: string which represents the student's ability to receive the vaccination.
+     */
     {
         if(other.getCanVacinate())
         {
@@ -259,19 +276,29 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void vaccinationForm1(View view)
+    /**
+     * Description: Function which responds to the click of first vaccination form.
+     * @param view: The view object of the first vaccination from button.
+     */
     {
-        currentVaccine = 0;
-        showAlertDialog(1);
+        showAlertDialog(0);
     }
 
 
     public void vaccinationForm2(View view)
+    /**
+     * Description: Function which responds to the click of second vaccination form.
+     * @param view: The view object of the second vaccination from button.
+     */
     {
-        currentVaccine = 1;
-        showAlertDialog(2);
+        showAlertDialog(1);
     }
 
-    public void showAlertDialog(int vacinOption)
+    public void showAlertDialog(int currentVaccine)
+    /**
+     * Description: Function shows an AlertDialog which provides the user a place to fill out the vaccination form.
+     * @param currentVaccine: Number of vaccination form the user wants to fill in(the first or second).
+     */
     {
         if(isVacinatable.isChecked())
         {
@@ -304,7 +331,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 adb = new AlertDialog.Builder(this);
                 adb.setCancelable(false);
                 adb.setView(mydialog);
-                adb.setTitle("Vacination Number " + Integer.toString(vacinOption) + " form");
+                adb.setTitle("Vacination Number " + Integer.toString(currentVaccine +1) + " form");
                 adb.setPositiveButton("Save", myclick);
                 adb.setNegativeButton("Discard", myclick);
                 adb.show();
@@ -319,6 +346,10 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     }
 
     public void chooseDate(View view)
+    /**
+     * Description: creates a date picker dialog.
+     * @params view: View of which activity to create the dialog.
+     */
     {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
@@ -347,6 +378,25 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
         datePickerDialog.show();
     }
+
+    /*
+     * Not enougth time to include date check :(
+
+    private String dateString( int year, int month, int day)
+    {
+        String ans = "" + year+"/";
+        if(month+1 < 10)
+        {
+            ans += "0" + (month+1) +"/";
+        }
+        else
+        {
+            ans += "0" + (month+1) +"/";
+        }
+        return ans;
+    }
+     */
+
 
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id)

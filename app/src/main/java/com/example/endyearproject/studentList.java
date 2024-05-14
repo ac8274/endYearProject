@@ -29,7 +29,11 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
 
 public class studentList extends AppCompatActivity implements View.OnCreateContextMenuListener, AdapterView.OnItemLongClickListener{
-
+    /**
+     * Description: Class is used for showing all students currently in database to the user, and allowing to remove or Edit the user.
+     * Edit:
+     * @see MainActivity
+     */
     TextView secondActivityTitle;
     ArrayList<Student> studentsList;
     studentAdapter studentsAdapter;
@@ -102,6 +106,9 @@ public class studentList extends AppCompatActivity implements View.OnCreateConte
     }
 
     private void getStudentsList() {
+        /**
+         * Description: updates students list
+         */
         refSchool.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
